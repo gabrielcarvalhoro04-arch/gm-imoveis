@@ -473,10 +473,10 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 .ficha-back{background:none;border:none;color:#fff;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;padding:8px 0;flex-shrink:0}
 .ficha-back svg{stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;width:18px;height:18px}
 .ficha-header-title{color:rgba(255,255,255,.85);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ficha-galeria{position:relative;height:72vh;min-height:400px;max-height:680px;overflow:hidden;background:#000;background:#111;overflow:hidden}
+.ficha-galeria{position:relative;height:55vh;min-height:320px;max-height:540px;overflow:hidden;background:#000;background:#111;overflow:hidden}
 .ficha-gal-slides{display:flex;height:100%;transition:transform .32s ease;width:100%}
 .ficha-gal-slide{min-width:100%;width:100%;height:100%;flex-shrink:0;overflow:hidden}
-.ficha-gal-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.ficha-gal-slide img{width:100%;height:100%;object-fit:contain;display:block;background:#000}
 .ficha-gal-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#ddd}
 .ficha-gal-btn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:26px;cursor:pointer;z-index:2;display:flex;align-items:center;justify-content:center;transition:.18s;line-height:1}
 .ficha-gal-btn:hover{background:rgba(0,0,0,.75)}
@@ -531,7 +531,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 .btn-ficha-wa:hover{background:#1eb855}
 .btn-ficha-wa svg{width:24px;height:24px;fill:#fff;flex-shrink:0}
 @media(max-width:600px){
-  .ficha-galeria{height:72vh;min-height:300px;max-height:500px}
+  .ficha-galeria{height:50vh;min-height:260px;max-height:400px}
   .ficha-titulo{font-size:18px}
   .ficha-preco{font-size:24px}
   .ficha-features{flex-wrap:wrap}
@@ -540,7 +540,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
   .ficha-form-row{grid-template-columns:1fr}
 }
 @media(min-width:768px){
-  .ficha-galeria{height:78vh;min-height:500px;max-height:820px}
+  .ficha-galeria{height:55vh;min-height:380px;max-height:560px}
   .ficha-titulo{font-size:26px}
 }
 </style>
