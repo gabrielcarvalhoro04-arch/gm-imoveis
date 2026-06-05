@@ -16,7 +16,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 @media(max-width:768px){.slide-content,.busca-section,.section-header-row,.bemvindo-inner,.imoveis-grid,.servicos-inner,.footer-inner{max-width:100%!important;padding-left:12px!important;padding-right:12px!important}}
 :root{
-  --red:#CC1E1E;--red2:#b01818;--navy:#1A2657;--navy2:#142050;--navy3:#0f1940;
+  --red:#CC1E1E;--red2:#b01818;--navy:#1e3a8a;--navy2:#1a3478;--navy3:#152c6e;
   --white:#fff;--gray:#f4f4f4;--gray2:#e8e8e8;--txt:#333;--txt2:#666;
 }
 html{scroll-behavior:smooth;overflow-x:hidden}
@@ -169,7 +169,7 @@ nav a:hover{color:var(--navy)}
 .btn-ver-mais{background:var(--navy);color:#fff;padding:10px 24px;border-radius:4px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-decoration:none;transition:.2s;border:2px solid var(--navy)}
 .btn-ver-mais:hover{background:transparent;color:var(--navy)}
 .imoveis-grid{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.imovel-card{background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:.25s}
+.imovel-card{background:#fff;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:.25s}
 .card-slider{position:relative;width:100%;height:100%}
 .sld-item{width:100%;height:100%;display:none}
 .sld-arr{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);color:#fff;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;z-index:2;transition:.2s}
@@ -185,7 +185,7 @@ nav a:hover{color:var(--navy)}
 .card-tipo{position:absolute;top:12px;left:12px;background:var(--red);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:3px;text-transform:uppercase}
 .card-negocio{position:absolute;top:12px;right:12px;background:var(--navy);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:3px;text-transform:uppercase}
 .card-code{position:absolute;bottom:10px;left:12px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:3px;font-family:'Montserrat',sans-serif}
-.card-body{padding:18px}
+.card-body{padding:18px;display:flex;flex-direction:column;flex:1}
 .card-price{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:var(--red);margin-bottom:6px}
 .card-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:5px}
 .card-loc{font-size:12px;color:var(--txt2);margin-bottom:14px}
@@ -390,7 +390,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 .hi{display:flex;align-items:center;height:106px;padding:0 10px;width:100%;box-sizing:border-box}
 .hi-logo{display:flex;align-items:flex-end;gap:6px;flex-shrink:0;text-decoration:none;margin-right:auto}
 .hi-logo-img{height:110px;width:auto;object-fit:contain;display:block}
-.hi-logo-29{height:22px;width:auto;object-fit:contain;opacity:.85;flex-shrink:0}
+.hi-logo-29{height:38px;width:auto;object-fit:contain;opacity:1;flex-shrink:0;display:block!important}
 .hi-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
 .hi-phone{position:relative}
 .hi-phone-btn{display:flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 5px}
@@ -446,7 +446,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
   .hi{height:48px;flex-wrap:nowrap;padding:0 2px;gap:0;width:100%;box-sizing:border-box;overflow:hidden}
   .hi-logo{margin-right:0;flex-shrink:0;padding-right:1px}
   .hi-logo-img{height:34px!important}
-  .hi-logo-29{display:none!important}
+  .hi-logo-29{display:block!important;height:20px!important}
   .hi-nav{display:flex!important;flex:1;justify-content:center;gap:0;overflow:hidden;min-width:0}
   .hi-nav a{font-size:8.5px;padding:2px 3px;white-space:nowrap;color:rgba(255,255,255,.9);letter-spacing:0}
   .hi-right{gap:0;flex-shrink:0}
@@ -605,7 +605,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 
 <!-- WA FLOAT -->
 <a href="https://wa.me/5555999761885?text=Olá%21+Vim+pelo+site+da+G%26M+Imóveis.+Gostaria+de+mais+informações." class="wa-float" target="_blank" title="WhatsApp">
-  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+  <svg viewBox="0 0 24 24" fill="white" width="30" height="30"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.524 5.847L0 24l6.341-1.502A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.587-.5-5.084-1.375l-.361-.214-3.762.891.946-3.659-.235-.374A9.962 9.962 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
 </a>
 
 <!-- TOP BAR -->
@@ -649,7 +649,9 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
     <div class="hi-right">
       <div class="hi-phone">
         <button class="hi-phone-btn" onclick="toggleDrop('hi-phone-drop')">
-          <div class="hi-phone-icon"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.77 9.46 19.79 19.79 0 01.7 4.83 2 2 0 012.68 2.5h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 10.1a16 16 0 006 6l1.06-1.06a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div <div class="hi-phone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" width="16" height="16"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.77 9.46 19.79 19.79 0 01.7 4.83 2 2 0 012.68 2.5h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.91 10.1a16 16 0 006 6l1.06-1.06a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          </div>
           <svg viewBox="0 0 24 24" class="hi-phone-arrow" width="10" height="10"><path d="M7 10l5 5 5-5z"/></svg>
         </button>
         <div class="hi-phone-drop" id="hi-phone-drop">
@@ -868,8 +870,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
       <div class="slide-tag">Imóveis para Venda</div>
       <h1 class="slide-title">Encontre o Imóvel Ideal em Uruguaiana</h1>
       <p class="slide-desc">Casas, apartamentos, terrenos e salas comerciais nos melhores bairros.</p>
-      <a href="#imoveis" class="btn-slide">VER IMÓVEIS</a>
-    </div>
+      </div>
   </div>
   <div class="slide" data-default>
     <div class="slide-bg" style="background:var(--navy)"></div>
@@ -879,8 +880,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
       <div class="slide-tag">Aluguel de Imóveis</div>
       <h1 class="slide-title">Alugar nunca foi tão fácil</h1>
       <p class="slide-desc">Apartamentos e casas para locação com as melhores condições do mercado.</p>
-      <a href="#imoveis" class="btn-slide">VER ALUGUÉIS</a>
-    </div>
+      </div>
   </div>
   <div class="slide" data-default>
     <div class="slide-bg" style="background:#7B2D2D"></div>
@@ -1125,12 +1125,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
   <div id="imoveis-grid" class="imoveis-grid" style="max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:24px"></div>
 </section>
 
-<!-- WA FLOAT -->
 
-<!-- WA FLOAT -->
-<a href="https://wa.me/5555999761885?text=Olá%21+Vim+pelo+site+da+G%26M+Imóveis.+Gostaria+de+mais+informações." class="wa-float" target="_blank" title="WhatsApp">
-  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
-</a>
     </a>
   </div>
 </div>
@@ -1574,7 +1569,7 @@ function renderImoveis(lista){
     }
     var feats='';
     if(im.dorm)feats+='<div class="cf">&#128716; '+im.dorm+' dorms</div>';
-    if(im.banh)feats+='<div class="cf">&#128695; '+im.banh+' banh</div>';
+    if(im.banh)feats+='<div class="cf">🚿 '+im.banh+' banh</div>';
     if(im.garagem)feats+='<div class="cf">&#128663; '+im.garagem+' vaga</div>';
     if(im.area)feats+='<div class="cf">&#128208; '+im.area+'m&sup2;</div>';
     return '<div class="imovel-card" onclick="abrirFichaImovel('+im.id+')" style="cursor:pointer"><div class="card-img">'+imgHtml+'<span class="card-tipo">'+im.tipo+'</span><span class="card-negocio">'+im.negocio+'</span></div><div class="card-body"><div class="card-price">'+pf+'</div><div class="card-title">'+im.titulo+'</div><div class="card-loc">&#128205; '+im.bairro+'</div><div class="card-feats">'+feats+'</div></div><a id="wabtn-'+im.id+'" href="javascript:void(0)" onclick="abrirWAImovel('+im.id+')" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25d366;color:#fff;padding:11px 14px;text-decoration:none;font-family:Montserrat,sans-serif;font-weight:800;font-size:12px;border-top:1px solid #eee;cursor:pointer"><svg viewBox="0 0 24 24" fill="white" width="16" height="16"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.524 5.847L0 24l6.341-1.502A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.853 0-3.587-.5-5.084-1.375l-.361-.214-3.762.891.946-3.659-.235-.374A9.962 9.962 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg> TENHO INTERESSE</a></div>';
@@ -1624,7 +1619,7 @@ function renderHeroSlider(){
       var ovDiv=document.createElement('div');ovDiv.className='slide-foto-overlay';
       var contentDiv=document.createElement('div');contentDiv.className='slide-content';contentDiv.style.cssText='position:relative;z-index:1';
       if(a.texto){var h1=document.createElement('h1');h1.className='slide-title';h1.textContent=a.texto;contentDiv.appendChild(h1);}
-      var link=document.createElement('a');link.href='#imoveis';link.className='btn-slide';link.textContent='VER IMÓVEIS';contentDiv.appendChild(link);
+
       div.appendChild(bgDiv);div.appendChild(ovDiv);div.appendChild(contentDiv);
       hero.insertBefore(div,prevBtn);
     });
@@ -1921,7 +1916,6 @@ function deletarImovel(id){
 
 function salvarAnuncio(){
   var txt=document.getElementById('a-anuncio').value.trim();
-  if(!txt){alert('Digite o texto do anúncio.');return;}
   var img=document.getElementById('a-banner-img-data').value;
   anuncios.push({texto:txt,imagem:img});setData('gm_anuncios',anuncios);
   renderAdminAnuncios();renderHeroSlider();
@@ -2114,7 +2108,7 @@ function abrirFichaImovel(id) {
   var dorm = im.dorm || im.quartos || 0;
   if (dorm) feats.push(['&#127968;', 'Dormitorios', dorm]);
   var banh = im.banh || im.banheiros || 0;
-  if (banh) feats.push(['&#128695;', 'Banheiros', banh]);
+  if (banh) feats.push(['<svg style="width:16px;height:16px;vertical-align:middle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6z"/><path d="M4 12V7a3 3 0 013-3h1"/><circle cx="7" cy="4" r="0.5" fill="currentColor"/><line x1="8" y1="16" x2="8" y2="19"/><line x1="12" y1="16" x2="12" y2="19"/><line x1="16" y1="16" x2="16" y2="19"/></svg>', 'Banheiros', banh]);
   var vaga = im.garagem || im.vagas || 0;
   if (vaga) feats.push(['&#128663;', 'Vaga', vaga]);
 
