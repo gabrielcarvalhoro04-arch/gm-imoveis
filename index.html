@@ -624,6 +624,10 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="17" height="17"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         Contato
       </a>
+      <a href="#" onclick="gmFecharDrawer();abrirModalPrivacidade();return false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" width="17" height="17"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Políticas de Privacidade
+      </a>
       <a href="https://www.facebook.com/share/1HFt2KsR9B/?mibextid=wwXIfr" target="_blank" onclick="gmFecharDrawer()">
         <svg viewBox="0 0 24 24" fill="white" width="17" height="17"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
         Facebook
@@ -1399,18 +1403,18 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
       </div>
     </div>
     <!-- Links -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-      <ul style="list-style:none;padding:0;margin:0">
-        <li style="margin-bottom:12px"><a href="#inicio" style="color:#333;text-decoration:none;font-size:14px">Início</a></li>
-        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalEmpresa();return false;" style="color:#333;text-decoration:none;font-size:14px">Empresa</a></li>
-        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalServicos();return false;" style="color:#333;text-decoration:none;font-size:14px">Serviços</a></li>
-        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalFinanciamentos();return false;" style="color:#333;text-decoration:none;font-size:14px">Financiamentos</a></li>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;justify-items:center">
+      <ul style="list-style:none;padding:0;margin:0;text-align:center">
+        <li style="margin-bottom:12px"><a href="#inicio" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Início</a></li>
+        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalEmpresa();return false;" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Empresa</a></li>
+        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalServicos();return false;" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Serviços</a></li>
+        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalFinanciamentos();return false;" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Financiamentos</a></li>
       </ul>
-      <ul style="list-style:none;padding:0;margin:0">
-        <li style="margin-bottom:12px"><a href="#imoveis" style="color:#333;text-decoration:none;font-size:14px">Locações</a></li>
-        <li style="margin-bottom:12px"><a href="#imoveis" style="color:#333;text-decoration:none;font-size:14px">Vendas</a></li>
-        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalPrivacidade();return false;" style="color:#333;text-decoration:none;font-size:14px">Políticas de privacidade</a></li>
-        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalContato();return false;" style="color:#333;text-decoration:none;font-size:14px">Contato</a></li>
+      <ul style="list-style:none;padding:0;margin:0;text-align:center">
+        <li style="margin-bottom:12px"><a href="#imoveis" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Locações</a></li>
+        <li style="margin-bottom:12px"><a href="#imoveis" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Vendas</a></li>
+        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalPrivacidade();return false;" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Políticas de privacidade</a></li>
+        <li style="margin-bottom:12px"><a href="#" onclick="abrirModalContato();return false;" style="color:#111;text-decoration:none;font-size:15px;font-weight:700">Contato</a></li>
       </ul>
     </div>
     <!-- Ícones sociais -->
@@ -1817,6 +1821,9 @@ function corrigirTitulo(t){
   for(var k in ac){ t = t.split(k).join(ac[k]); }
   return t;
 }
+
+function abrirModalPrivacidade(){document.getElementById('modal-privacidade').style.display='flex';}
+function fecharModalPrivacidade(){document.getElementById('modal-privacidade').style.display='none';}
 // ── ADMIN ──
 function openAdmin(){document.getElementById('login-overlay').classList.add('show');document.getElementById('login-pass').value='';document.getElementById('login-err').classList.remove('show');}
 function closeLogin(){document.getElementById('login-overlay').classList.remove('show');}
@@ -2238,5 +2245,24 @@ window.addEventListener('popstate', function() {
 function gmAbrirDrawer(){document.getElementById('gm-drawer').classList.add('open');document.body.style.overflow='hidden';}
 function gmFecharDrawer(){document.getElementById('gm-drawer').classList.remove('open');document.body.style.overflow='';}
 </script>
+
+<!-- MODAL POLÍTICAS DE PRIVACIDADE -->
+<div class="modal-overlay" id="modal-privacidade">
+  <div class="modal-box" style="max-width:600px">
+    <button class="modal-close" onclick="fecharModalPrivacidade()">&#215;</button>
+    <div class="modal-content">
+      <h2 style="font-family:Montserrat,sans-serif;font-weight:800;color:var(--navy);margin-bottom:16px">Políticas de Privacidade</h2>
+      <div style="font-size:14px;color:#444;line-height:1.8;max-height:60vh;overflow-y:auto;padding-right:8px">
+        <p><strong>G&M Imóveis</strong> respeita a sua privacidade e está comprometida com a proteção dos seus dados pessoais.</p>
+        <p style="margin-top:12px"><strong>Coleta de Dados</strong><br>Coletamos apenas as informações necessárias para atendê-lo, como nome, telefone e e-mail, fornecidos voluntariamente através de nossos formulários de contato.</p>
+        <p style="margin-top:12px"><strong>Uso dos Dados</strong><br>Seus dados são utilizados exclusivamente para contato relacionado a imóveis de interesse, nunca sendo compartilhados com terceiros sem sua autorização.</p>
+        <p style="margin-top:12px"><strong>WhatsApp e E-mail</strong><br>Ao entrar em contato via WhatsApp ou e-mail, você consente com o uso dessas informações para atendimento imobiliário.</p>
+        <p style="margin-top:12px"><strong>Segurança</strong><br>Adotamos medidas de segurança para proteger suas informações contra acesso não autorizado.</p>
+        <p style="margin-top:12px"><strong>Seus Direitos</strong><br>Você pode solicitar a exclusão dos seus dados a qualquer momento entrando em contato pelo e-mail gm.imoveis@uol.com.br.</p>
+        <p style="margin-top:12px"><strong>Contato</strong><br>G&M Imóveis — CRECI 21930-J<br>Av. Duque de Caxias, 1748, loja 01 — Uruguaiana/RS<br>gm.imoveis@uol.com.br</p>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
