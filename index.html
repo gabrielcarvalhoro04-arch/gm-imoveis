@@ -59,7 +59,7 @@ nav a:hover{color:var(--navy)}
 /* HERO */
 .hero{position:relative;overflow:hidden;height:540px;border-bottom:4px solid #fff}
 .slide{position:absolute;inset:0;display:flex;align-items:center;padding:0 80px;opacity:0;transition:opacity .6s;pointer-events:none}
-.slide-foto-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat}
+.slide-foto-bg{position:absolute;inset:0;background-size:contain;background-position:center center;background-repeat:no-repeat;background-color:#000}
 #lightbox{display:none}
 #lightbox.open{display:flex!important}
 .sld-item img{cursor:zoom-in}
@@ -1257,6 +1257,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
       <button class="atab" onclick="showAdminTab(this,'adicionar')">&#10133; Adicionar Imóvel</button>
       <button class="atab" onclick="showAdminTab(this,'anuncios')">&#128226; Anúncios do Banner</button>
       <button class="atab" onclick="showAdminTab(this,'sync')">&#9729;&#65039; Sincronizar</button>
+      <button class="atab" id="tab-btn-editar" onclick="showAdminTab(this,'editar')" style="display:none">✏️ Editando</button>
     </div>
     <div class="admin-body">
 
@@ -1367,6 +1368,93 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
         </div>
       </div>
 
+
+
+      <!-- ABA EDITAR IMÓVEL -->
+      <div class="admin-section" id="tab-editar">
+        <h3 style="font-family:Montserrat,sans-serif;font-weight:800;color:var(--navy);margin-bottom:16px">✏️ Editar Imóvel</h3>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">TIPO</label>
+            <select class="admin-select" id="e-tipo">
+              <option>Casa</option><option>Apartamento</option><option>Sala Comercial</option><option>Terreno</option><option>Kitnet</option><option>Cobertura</option><option>Galpão</option><option>Conjunto de Salas</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">NEGÓCIO</label>
+            <select class="admin-select" id="e-negocio">
+              <option>Aluguel</option><option>Venda</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">TÍTULO</label>
+          <input class="admin-input" id="e-titulo" placeholder="Ex: Apartamento 2 dormitórios para locação">
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">PREÇO (R$)</label>
+            <input class="admin-input" id="e-preco" type="number" placeholder="1500">
+          </div>
+          <div>
+            <label class="form-label">BAIRRO / ENDEREÇO</label>
+            <input class="admin-input" id="e-bairro" placeholder="Centro - Uruguaiana">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">CONDOMÍNIO R$/mês (opcional)</label>
+            <input class="admin-input" id="e-condominio" type="number" placeholder="0">
+          </div>
+          <div>
+            <label class="form-label">IPTU R$/mês (opcional)</label>
+            <input class="admin-input" id="e-iptu" type="number" placeholder="0">
+          </div>
+        </div>
+        <div class="form-row-3">
+          <div>
+            <label class="form-label">ÁREA (m²)</label>
+            <input class="admin-input" id="e-area" type="number" placeholder="60">
+          </div>
+          <div>
+            <label class="form-label">DORMITÓRIOS</label>
+            <input class="admin-input" id="e-dorm" type="number" placeholder="2">
+          </div>
+          <div>
+            <label class="form-label">BANHEIROS</label>
+            <input class="admin-input" id="e-banh" type="number" placeholder="1">
+          </div>
+        </div>
+        <div>
+          <label class="form-label">GARAGEM</label>
+          <input class="admin-input" id="e-garagem" type="number" placeholder="0">
+        </div>
+        <div>
+          <label class="form-label">DESCRIÇÃO</label>
+          <textarea class="admin-input" id="e-descricao" rows="4" placeholder="Descreva o imóvel..."></textarea>
+        </div>
+        <div>
+          <label class="form-label">COMODIDADES (uma por linha)</label>
+          <textarea class="admin-input" id="e-comodidades" rows="4" placeholder="Churrasqueira&#10;Piscina&#10;Academia"></textarea>
+        </div>
+
+        <!-- FOTOS -->
+        <div>
+          <label class="form-label">FOTOS DO IMÓVEL</label>
+          <div id="e-fotos-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0"></div>
+          <label style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:Montserrat,sans-serif;margin-top:4px">
+            📷 Adicionar Fotos
+            <input type="file" accept="image/*" multiple onchange="adicionarFotosEdicao(this)" style="display:none">
+          </label>
+          <p style="font-size:11px;color:#999;margin-top:6px">Clique no X para remover uma foto</p>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:12px">
+          <button onclick="salvarEdicaoImovel()" class="btn-admin-save">💾 SALVAR ALTERAÇÕES</button>
+          <button onclick="cancelarEdicao()" class="btn-admin-del">✕ Cancelar</button>
+        </div>
+        <div id="msg-editar" style="display:none;background:rgba(30,58,138,.1);color:var(--navy);padding:10px 14px;border-radius:6px;font-size:13px;font-weight:700;margin-top:10px">✅ Imóvel atualizado!</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1828,6 +1916,105 @@ function corrigirTitulo(t){
 
 function abrirModalPrivacidade(){document.getElementById('modal-privacidade').style.display='flex';}
 function fecharModalPrivacidade(){document.getElementById('modal-privacidade').style.display='none';}
+
+// ── EDITAR IMÓVEL ──
+var _editandoId = null;
+
+function abrirEditarImovel(id){
+  var im = imoveis.find(function(x){return x.id===id;});
+  if(!im) return;
+  _editandoId = id;
+  document.getElementById('e-tipo').value = im.tipo || 'Casa';
+  document.getElementById('e-negocio').value = im.negocio || 'Aluguel';
+  document.getElementById('e-titulo').value = im.titulo || '';
+  document.getElementById('e-preco').value = im.preco || '';
+  document.getElementById('e-bairro').value = im.bairro || '';
+  document.getElementById('e-condominio').value = im.condominio || '';
+  document.getElementById('e-iptu').value = im.iptu || '';
+  document.getElementById('e-area').value = im.area || '';
+  document.getElementById('e-dorm').value = im.dorm || '';
+  document.getElementById('e-banh').value = im.banh || '';
+  document.getElementById('e-garagem').value = im.garagem || '';
+  document.getElementById('e-descricao').value = im.descricao || '';
+  document.getElementById('e-comodidades').value = (im.comodidades||[]).join('\n');
+  // Fotos
+  _editFotos = im.fotos ? im.fotos.slice() : (im.foto ? [im.foto] : []);
+  renderFotosEdicao();
+  // Mostrar aba
+  var tabBtn = document.getElementById('tab-btn-editar');
+  tabBtn.style.display = '';
+  tabBtn.click();
+}
+
+var _editFotos = [];
+
+function renderFotosEdicao(){
+  var preview = document.getElementById('e-fotos-preview');
+  if(!preview) return;
+  preview.innerHTML = _editFotos.map(function(f,i){
+    return '<div style="position:relative;display:inline-block">'
+      +'<img src="'+f+'" style="width:80px;height:60px;object-fit:cover;border-radius:6px;border:2px solid #ddd">'
+      +'<button onclick="removerFotoEdicao('+i+')" style="position:absolute;top:-6px;right:-6px;background:#e53e3e;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:20px;padding:0">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+function removerFotoEdicao(i){
+  _editFotos.splice(i,1);
+  renderFotosEdicao();
+}
+
+function adicionarFotosEdicao(input){
+  var files = Array.from(input.files);
+  var total = files.length;
+  var loaded = 0;
+  files.forEach(function(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      _editFotos.push(e.target.result);
+      loaded++;
+      if(loaded === total) renderFotosEdicao();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function salvarEdicaoImovel(){
+  if(!_editandoId) return;
+  var idx = imoveis.findIndex(function(x){return x.id===_editandoId;});
+  if(idx === -1) return;
+  imoveis[idx].tipo = document.getElementById('e-tipo').value;
+  imoveis[idx].negocio = document.getElementById('e-negocio').value;
+  imoveis[idx].titulo = document.getElementById('e-titulo').value.trim();
+  imoveis[idx].preco = parseFloat(document.getElementById('e-preco').value) || 0;
+  imoveis[idx].bairro = document.getElementById('e-bairro').value.trim();
+  imoveis[idx].condominio = document.getElementById('e-condominio').value || '';
+  imoveis[idx].iptu = document.getElementById('e-iptu').value || '';
+  imoveis[idx].area = parseFloat(document.getElementById('e-area').value) || 0;
+  imoveis[idx].dorm = parseInt(document.getElementById('e-dorm').value) || 0;
+  imoveis[idx].banh = parseInt(document.getElementById('e-banh').value) || 0;
+  imoveis[idx].garagem = parseInt(document.getElementById('e-garagem').value) || 0;
+  imoveis[idx].descricao = document.getElementById('e-descricao').value.trim();
+  var comodStr = document.getElementById('e-comodidades').value.trim();
+  imoveis[idx].comodidades = comodStr ? comodStr.split('\n').map(function(c){return c.trim();}).filter(Boolean) : [];
+  imoveis[idx].fotos = _editFotos.slice();
+  if(_editFotos.length > 0) imoveis[idx].foto = _editFotos[0];
+  setData('gm_imoveis', imoveis);
+  renderImoveis(imoveis);
+  renderAdminImoveis();
+  document.getElementById('msg-editar').style.display = 'block';
+  setTimeout(function(){document.getElementById('msg-editar').style.display='none';}, 2500);
+}
+
+function cancelarEdicao(){
+  _editandoId = null;
+  var tabBtn = document.getElementById('tab-btn-editar');
+  tabBtn.style.display = 'none';
+  // Voltar para aba imóveis
+  document.querySelector('.atab.active') && document.querySelector('.atab.active').classList.remove('active');
+  var tabIm = document.querySelector('[onclick*="imoveis"]');
+  if(tabIm) tabIm.click();
+}
 // ── ADMIN ──
 function openAdmin(){document.getElementById('login-overlay').classList.add('show');document.getElementById('login-pass').value='';document.getElementById('login-err').classList.remove('show');}
 function closeLogin(){document.getElementById('login-overlay').classList.remove('show');}
@@ -1851,7 +2038,7 @@ function renderAdminImoveis(){
   if(!imoveis.length){list.innerHTML='<p style="color:var(--txt2);font-size:13px;padding:20px 0">Nenhum imóvel cadastrado ainda.</p>';return;}
   list.innerHTML=imoveis.map(function(im){
     var pf=im.negocio==='Aluguel'?'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2});
-    return '<div class="imovel-list-item"><div class="ili-info"><h4>'+im.titulo+'</h4><span>'+im.bairro+'</span><div class="ili-badges"><span class="badge badge-navy">'+im.tipo+'</span><span class="badge badge-red">'+im.negocio+'</span><span class="badge">'+pf+'</span></div></div><button class="btn-admin-del" onclick="deletarImovel('+im.id+')">Remover</button></div>';
+    return '<div class="imovel-list-item"><div class="ili-info"><h4>'+im.titulo+'</h4><span>'+im.bairro+'</span><div class="ili-badges"><span class="badge badge-navy">'+im.tipo+'</span><span class="badge badge-red">'+im.negocio+'</span><span class="badge">'+pf+'</span></div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn-admin-save" style="background:var(--navy);font-size:12px;padding:8px 14px" onclick="abrirEditarImovel('+im.id+')">✏️ Editar</button><button class="btn-admin-del" onclick="deletarImovel('+im.id+')">Remover</button></div></div>';
   }).join('');
 }
 
@@ -2134,12 +2321,12 @@ function abrirFichaImovel(id) {
   var precoNum = (im.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2});
   document.getElementById('ficha-neg-label').textContent = neg === 'Aluguel' ? 'Aluguéis' : 'Comprar';
   document.getElementById('ficha-preco').innerHTML = neg === 'Aluguel'
-    ? 'R$ ' + precoNum + '<span>/mes</span>'
+    ? 'R$ ' + precoNum + '<span>/mês</span>'
     : 'R$ ' + precoNum;
 
   var extras = [];
   if (im.condominio && +im.condominio > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + (+im.condominio).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '/mês</strong>Média/mês</div>');
-  if (im.iptu && +im.iptu > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + (+im.iptu).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '/mes</strong>IPTU</div>');
+  if (im.iptu && +im.iptu > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + (+im.iptu).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '/mês</strong>IPTU</div>');
   document.getElementById('ficha-preco-extras').innerHTML = extras.join('');
 
   // ── Features ──
