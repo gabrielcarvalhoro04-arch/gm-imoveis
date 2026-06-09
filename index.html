@@ -57,7 +57,7 @@ nav a:hover{color:var(--navy)}
 .hc-text strong{display:block;font-size:13px;font-weight:700;color:var(--navy);font-family:'Montserrat',sans-serif}
 
 /* HERO */
-.hero{position:relative;overflow:hidden;height:560px;border-bottom:4px solid #fff}
+.hero{position:relative;overflow:hidden;height:65vh;min-height:380px;max-height:720px;border-bottom:4px solid #fff}
 .slide{position:absolute;inset:0;display:flex;align-items:center;padding:0 80px;opacity:0;transition:opacity .6s;pointer-events:none}
 .slide-foto-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat}
 #lightbox{display:none}
@@ -190,7 +190,7 @@ nav a:hover{color:var(--navy)}
 .card-negocio{position:absolute;top:12px;right:12px;background:var(--navy);color:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:10px;letter-spacing:1px;padding:4px 10px;border-radius:3px;text-transform:uppercase}
 .card-code{position:absolute;bottom:10px;left:12px;background:rgba(0,0,0,.6);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:3px;font-family:'Montserrat',sans-serif}
 .card-body{padding:18px;display:flex;flex-direction:column;flex:1}
-.card-price{font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px;color:var(--red);margin-bottom:6px}
+.card-price{font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:var(--red);margin-bottom:6px}
 .card-title{font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:5px}
 .card-loc{font-size:12px;color:var(--txt2);margin-bottom:14px}
 .card-feats{display:flex;gap:14px;border-top:1px solid var(--gray2);padding-top:12px;flex-wrap:wrap}
@@ -308,7 +308,7 @@ footer{background:#fff;padding:20px 24px 0}
   .hc-icon{width:34px;height:34px}
 
   /* Hero */
-  .hero{height:300px;overflow:hidden;width:100%}
+  .hero{height:50vh;min-height:260px;max-height:400px;overflow:hidden;width:100%}
   .slide{padding:0 28px}
   .slide-title{font-size:20px;line-height:1.3}
   .slide-tag{font-size:10px}
@@ -343,7 +343,7 @@ footer{background:#fff;padding:20px 24px 0}
   .imovel-card{border-radius:10px}
   .card-img{height:240px}
   .card-body{padding:12px}
-  .card-price{font-size:17px}
+  .card-price{font-size:13px}
   .card-title{font-size:13px}
   .card-feats{gap:6px;flex-wrap:wrap}
   .cf{font-size:11px}
@@ -379,7 +379,7 @@ footer{background:#fff;padding:20px 24px 0}
 @media(max-width:480px){
   .busca-grid2{grid-template-columns:1fr!important}
   .slide-title{font-size:17px}
-  .hero{height:190px}
+  .hero{height:40vh;min-height:200px;max-height:300px}
   .slide{padding:0 32px}
   .card-feats{flex-wrap:wrap}
   .header-inner{height:64px}
@@ -503,7 +503,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 .ficha-codigo{color:#aaa;font-size:11px;font-family:'Montserrat',sans-serif;margin-bottom:16px}
 .ficha-preco-box{background:#fff;border-radius:12px;padding:16px 18px;margin-bottom:14px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
 .ficha-neg-label{font-size:12px;color:#777;margin-bottom:3px}
-.ficha-preco{font-family:'Montserrat',sans-serif;font-weight:900;font-size:30px;color:#111;line-height:1}
+.ficha-preco{font-family:'Montserrat',sans-serif;font-weight:900;font-size:24px;color:#111;line-height:1}
 .ficha-preco span{font-size:15px;font-weight:500;color:#777}
 .ficha-preco-extras{display:flex;gap:20px;margin-top:10px;flex-wrap:wrap}
 .ficha-extra{font-size:12px;color:#555}
@@ -537,7 +537,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
 @media(max-width:600px){
   .ficha-galeria{height:50vh;min-height:260px;max-height:400px}
   .ficha-titulo{font-size:18px}
-  .ficha-preco{font-size:24px}
+  .ficha-preco{font-size:20px}
   .ficha-features{flex-wrap:wrap}
   .ficha-feat{min-width:50%;border-bottom:1px solid #f0f0f0}
   .ficha-comodidades{grid-template-columns:1fr}
@@ -2325,7 +2325,7 @@ function abrirFichaImovel(id) {
     : 'R$ ' + precoNum;
 
   var extras = [];
-  if (im.condominio && +im.condominio > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + (+im.condominio).toLocaleString('pt-BR',{minimumFractionDigits:2}) + ' Média/mês</strong>Condomínio</div>');
+  if (im.condominio && +im.condominio > 0) extras.push('<div class="ficha-extra"><strong style="display:inline">R$ ' + (+im.condominio).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</strong> — média/mês<br>Condomínio</div>');
   if (im.iptu && +im.iptu > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + (+im.iptu).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '/mês</strong>IPTU</div>');
   document.getElementById('ficha-preco-extras').innerHTML = extras.join('');
 
