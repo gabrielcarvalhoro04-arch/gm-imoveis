@@ -671,7 +671,7 @@ header{background:var(--navy);position:sticky;top:0;z-index:200;box-shadow:0 2px
         <svg viewBox="0 0 24 24" width="19" height="19"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
       <nav class="hi-nav">
-        <a href="javascript:void(0)" onclick="return false">Lançamentos</a>
+        <a href="javascript:void(0)" onclick="mostrarLancamentos()">Lançamentos</a>
         <a href="javascript:void(0)" onclick="filtrarPorNegocio('comprar')">Vendas</a>
         <a href="javascript:void(0)" onclick="filtrarPorNegocio('alugar')">Aluguéis</a>
       </nav>
@@ -1844,6 +1844,15 @@ function selecionarPrecoAuto(el){
   el.closest('.bf-dropdown').querySelectorAll('.bf-dd-option').forEach(function(o){o.classList.remove('selected');});
   el.classList.add('selected');
   document.querySelectorAll('.bf-dropdown').forEach(function(d){d.classList.remove('open');});
+}
+function mostrarLancamentos(){
+  renderImoveis([],true);
+  setTimeout(function(){
+    var grid=document.getElementById('imoveis-grid');
+    var secao=document.getElementById('imoveis');
+    var alvo=grid||secao;
+    if(alvo){var y=alvo.getBoundingClientRect().top+window.pageYOffset-120;window.scrollTo({top:y,behavior:'smooth'});}
+  },150);
 }
 function filtrarPorNegocio(modo){
   buscaMode=modo;
