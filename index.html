@@ -1617,7 +1617,7 @@ function waLinkImovel(im,pf){
 function abrirWAImovel(id){
   var im=imoveis.find(function(x){return x.id===id;});
   if(!im)return;
-  var pf=im.negocio==='Aluguel'?'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2});
+  var pf=im.negocio==='Aluguel'?'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2});
   window.open(waLinkImovel(im,pf),'_blank');
 }
 
@@ -1670,7 +1670,7 @@ function renderImoveis(lista,buscaAtiva){
     return;
   }
   grid.innerHTML=lista.map(function(im,i){
-    var pf=im.negocio==='Aluguel'?'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2});
+    var pf=im.negocio==='Aluguel'?'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2});
     var fotos=(im.fotos&&im.fotos.length)?im.fotos:(im.foto?[im.foto]:[]);
     _fotosMap[im.id]=fotos;
     var imgHtml;
@@ -2117,7 +2117,7 @@ function renderAdminImoveis(){
   var list=document.getElementById('admin-imoveis-list');
   if(!imoveis.length){list.innerHTML='<p style="color:var(--txt2);font-size:13px;padding:20px 0">Nenhum imóvel cadastrado ainda.</p>';return;}
   list.innerHTML=imoveis.map(function(im){
-    var pf=im.negocio==='Aluguel'?'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+im.preco.toLocaleString('pt-BR',{minimumFractionDigits:2});
+    var pf=im.negocio==='Aluguel'?'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2});
     return '<div class="imovel-list-item"><div class="ili-info"><h4>'+im.titulo+'</h4><span>'+im.bairro+'</span><div class="ili-badges"><span class="badge badge-navy">'+im.tipo+'</span><span class="badge badge-red">'+im.negocio+'</span><span class="badge">'+pf+'</span></div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn-admin-save" style="background:var(--navy);font-size:12px;padding:8px 14px" onclick="abrirEditarImovel('+im.id+')">✏️ Editar</button><button class="btn-admin-del" onclick="deletarImovel('+im.id+')">Remover</button></div></div>';
   }).join('');
 }
@@ -2407,15 +2407,15 @@ function abrirFichaImovel(id) {
   document.getElementById('ficha-codigo').textContent = im.codigo ? 'Codigo: ' + im.codigo : '';
 
   // ── Preço ──
-  var precoNum = (im.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2});
+  var precoNum = Math.round(im.preco || 0).toLocaleString('pt-BR',{minimumFractionDigits:2});
   document.getElementById('ficha-neg-label').textContent = neg === 'Aluguel' ? 'Aluguéis' : 'Comprar';
   document.getElementById('ficha-preco').innerHTML = neg === 'Aluguel'
     ? 'R$ ' + precoNum + '<span>/mês</span>'
     : 'R$ ' + precoNum;
 
   var extras = [];
-  if (im.condominio && +im.condominio > 0) extras.push('<div class="ficha-extra"><strong style="display:inline">R$ ' + (+im.condominio).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</strong> — média/mês<br>Condomínio</div>');
-  if (im.iptu && +im.iptu > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + (+im.iptu).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '/mês</strong>IPTU</div>');
+  if (im.condominio && +im.condominio > 0) extras.push('<div class="ficha-extra"><strong style="display:inline">R$ ' + Math.round(+im.condominio).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '</strong> — média/mês<br>Condomínio</div>');
+  if (im.iptu && +im.iptu > 0) extras.push('<div class="ficha-extra"><strong>R$ ' + Math.round(+im.iptu).toLocaleString('pt-BR',{minimumFractionDigits:2}) + '/mês</strong>IPTU</div>');
   document.getElementById('ficha-preco-extras').innerHTML = extras.join('');
 
   // ── Features ──
