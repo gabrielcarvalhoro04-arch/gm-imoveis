@@ -1576,7 +1576,17 @@ function lerDados(cb){
   fetch(FIREBASE_URL+'/dados.json')
   .then(function(r){return r.json();})
   .then(function(d){
-    if(d){imoveis=d.imoveis||[];anuncios=(d.anuncios||[]).map(function(a){return typeof a==='string'?{texto:a,imagem:''}:a;});}
+    if(d && d.imoveis && d.imoveis.length>0){
+      imoveis=d.imoveis;
+      anuncios=(d.anuncios||[]).map(function(a){return typeof a==='string'?{texto:a,imagem:''}:a;});
+    } else if(d){
+      try{
+        var iv=localStorage.getItem('gm_imoveis');
+        if(iv){var parsed=JSON.parse(iv);if(parsed&&parsed.length>0)imoveis=parsed;else imoveis=d.imoveis||[];}
+        else imoveis=d.imoveis||[];
+      }catch(e){imoveis=d.imoveis||[];}
+      anuncios=(d.anuncios||[]).map(function(a){return typeof a==='string'?{texto:a,imagem:''}:a;});
+    }
     if(cb)cb();
   })
   .catch(function(){
@@ -1587,8 +1597,9 @@ function lerDados(cb){
 }
 
 function salvarDados(){
-  fetch(FIREBASE_URL+'/dados.json',{method:'PUT',body:JSON.stringify({imoveis:imoveis,anuncios:anuncios}),headers:{'Content-Type':'application/json'}})
-  .catch(function(){try{localStorage.setItem('gm_imoveis',JSON.stringify(imoveis));localStorage.setItem('gm_anuncios',JSON.stringify(anuncios));}catch(e){}});
+  try{localStorage.setItem('gm_imoveis',JSON.stringify(imoveis));localStorage.setItem('gm_anuncios',JSON.stringify(anuncios));}catch(e){}
+  fetch(FIREBASE_URL+'/dados.json',{method:'PUT',body:JSON.stringify({imoveis:imoveis,anuncios:anuncios,chave:'gm2026imovsecreta'}),headers:{'Content-Type':'application/json'}})
+  .catch(function(){});
 }
 
 function setData(k,v){
@@ -2048,13 +2059,11 @@ function adicionarFotosEdicao(input){
   var total = files.length;
   var loaded = 0;
   files.forEach(function(file){
-    var reader = new FileReader();
-    reader.onload = function(e){
-      _editFotos.push(e.target.result);
+    comprimirImagem(file, function(dataUrl){
+      _editFotos.push(dataUrl);
       loaded++;
       if(loaded === total) renderFotosEdicao();
-    };
-    reader.readAsDataURL(file);
+    });
   });
 }
 
@@ -2142,22 +2151,42 @@ function toggleCamposResidencial(){
   if(cg)cg.style.display=semGaragem?'none':'';
 }
 
+// ── Compressão de fotos (evita estourar limite do Firebase) ──
+function comprimirImagem(file, cb){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var MAX_W = 1280;
+      var w = img.width, h = img.height;
+      if(w > MAX_W){ h = Math.round(h * (MAX_W / w)); w = MAX_W; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+      cb(dataUrl);
+    };
+    img.onerror = function(){ cb(e.target.result); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function adicionarFotos(input){
   if(!input.files||!input.files.length)return;
   var preview=document.getElementById('a-fotos-preview');
   var fotosInput=document.getElementById('a-fotos-json');
   var fotos=JSON.parse(fotosInput.value||'[]');
   Array.from(input.files).forEach(function(file){
-    var reader=new FileReader();
-    reader.onload=function(e){
-      fotos.push(e.target.result);
+    comprimirImagem(file, function(dataUrl){
+      fotos.push(dataUrl);
       fotosInput.value=JSON.stringify(fotos);
       var idx=fotos.length-1;
       var wrap=document.createElement('div');wrap.className='foto-thumb-wrap';
-      wrap.innerHTML='<img src="'+e.target.result+'" class="foto-thumb"><button type="button" class="foto-del" onclick="removerFoto('+idx+')">&#215;</button>';
+      wrap.innerHTML='<img src="'+dataUrl+'" class="foto-thumb"><button type="button" class="foto-del" onclick="removerFoto('+idx+')">&#215;</button>';
       preview.appendChild(wrap);
-    };
-    reader.readAsDataURL(file);
+    });
   });
   input.value='';
 }
@@ -2178,14 +2207,12 @@ function removerFoto(idx){
 
 function previewBannerImg(input){
   if(!input.files||!input.files[0])return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    document.getElementById('a-banner-img-data').value=e.target.result;
-    document.getElementById('banner-img-preview-img').src=e.target.result;
+  comprimirImagem(input.files[0], function(dataUrl){
+    document.getElementById('a-banner-img-data').value=dataUrl;
+    document.getElementById('banner-img-preview-img').src=dataUrl;
     document.getElementById('banner-img-preview').style.display='block';
     document.getElementById('banner-img-nome').textContent=input.files[0].name;
-  };
-  reader.readAsDataURL(input.files[0]);
+  });
 }
 
 function limparImgBanner(){
