@@ -2146,10 +2146,37 @@ function showAdminTab(el,tab){
 function renderAdminImoveis(){
   var list=document.getElementById('admin-imoveis-list');
   if(!imoveis.length){list.innerHTML='<p style="color:var(--txt2);font-size:13px;padding:20px 0">Nenhum imóvel cadastrado ainda.</p>';return;}
-  list.innerHTML=imoveis.map(function(im){
-    var pf=im.negocio==='Aluguel'?'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2});
-    return '<div class="imovel-list-item"><div class="ili-info"><h4>'+im.titulo+'</h4><span>'+im.bairro+'</span><div class="ili-badges"><span class="badge badge-navy">'+im.tipo+'</span><span class="badge badge-red">'+im.negocio+'</span><span class="badge">'+pf+'</span></div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn-admin-save" style="background:var(--navy);font-size:12px;padding:8px 14px" onclick="abrirEditarImovel('+im.id+')">✏️ Editar</button><button class="btn-admin-del" onclick="deletarImovel('+im.id+')">Remover</button></div></div>';
-  }).join('');
+  function _grupoHtml(negocio){
+    var itens=imoveis.filter(function(im){return im.negocio===negocio;});
+    if(!itens.length)return '';
+    var html='<h4 style="font-family:Montserrat,sans-serif;font-weight:900;color:var(--navy);margin:20px 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--gray2);padding-bottom:6px">'+negocio+' ('+itens.length+')</h4>';
+    html+=itens.map(function(im,i){
+      var pf=im.negocio==='Aluguel'?'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2});
+      var upAttr=i===0?'disabled style="opacity:.3;cursor:default;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"':'style="cursor:pointer;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"';
+      var downAttr=i===itens.length-1?'disabled style="opacity:.3;cursor:default;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"':'style="cursor:pointer;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"';
+      return '<div class="imovel-list-item"><div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><button '+upAttr+' onclick="moverImovelAdmin('+im.id+',-1)" title="Mover para cima">▲</button><button '+downAttr+' onclick="moverImovelAdmin('+im.id+',1)" title="Mover para baixo">▼</button></div><div class="ili-info"><h4>'+im.titulo+'</h4><span>'+im.bairro+'</span><div class="ili-badges"><span class="badge badge-navy">'+im.tipo+'</span><span class="badge badge-red">'+im.negocio+'</span><span class="badge">'+pf+'</span></div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn-admin-save" style="background:var(--navy);font-size:12px;padding:8px 14px" onclick="abrirEditarImovel('+im.id+')">✏️ Editar</button><button class="btn-admin-del" onclick="deletarImovel('+im.id+')">Remover</button></div></div>';
+    }).join('');
+    return html;
+  }
+  list.innerHTML=_grupoHtml('Venda')+_grupoHtml('Aluguel');
+}
+
+function moverImovelAdmin(id,dir){
+  var idx=imoveis.findIndex(function(x){return x.id===id;});
+  if(idx===-1)return;
+  var negocio=imoveis[idx].negocio;
+  var mesmosIdx=[];
+  imoveis.forEach(function(im,i){if(im.negocio===negocio)mesmosIdx.push(i);});
+  var posNoGrupo=mesmosIdx.indexOf(idx);
+  var novaPos=posNoGrupo+dir;
+  if(novaPos<0||novaPos>=mesmosIdx.length)return;
+  var idxAlvo=mesmosIdx[novaPos];
+  var tmp=imoveis[idx];
+  imoveis[idx]=imoveis[idxAlvo];
+  imoveis[idxAlvo]=tmp;
+  setData('gm_imoveis',imoveis);
+  renderAdminImoveis();
+  renderImoveisPorModo();
 }
 
 function renderAdminAnuncios(){
