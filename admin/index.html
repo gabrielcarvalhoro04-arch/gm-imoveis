@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel Admin — G&amp;M Imóveis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#CC1E1E;--red2:#b01818;--navy:#1e3a8a;--navy2:#1a3478;--navy3:#152c6e;
+  --white:#fff;--gray:#f4f4f4;--gray2:#e8e8e8;--txt:#333;--txt2:#666;
+}
+*{box-sizing:border-box}
+body{font-family:'Open Sans',sans-serif;color:var(--txt);background:var(--gray);margin:0;min-height:100vh}
+
+/* LOGIN */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--navy)}
+.login-box{background:#fff;border-radius:12px;padding:40px;width:360px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,.4);text-align:center}
+.login-box h2{font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;color:var(--navy);margin:0 0 6px}
+.login-box p{font-size:13px;color:var(--txt2);margin-bottom:24px}
+.login-input{width:100%;border:1.5px solid var(--gray2);border-radius:6px;padding:12px 14px;font-size:14px;outline:none;transition:.2s;margin-bottom:12px;font-family:'Open Sans',sans-serif}
+.login-input:focus{border-color:var(--navy)}
+.btn-login{width:100%;background:var(--navy);color:#fff;border:none;padding:13px;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:.2s}
+.btn-login:hover{background:var(--navy2)}
+.btn-login:disabled{opacity:.6;cursor:default}
+.login-err{color:var(--red);font-size:12px;font-weight:700;margin-top:10px;display:none;text-align:left}
+.login-err.show{display:block}
+.login-back{display:inline-block;margin-top:18px;font-size:12px;color:var(--txt2);text-decoration:none}
+.login-back:hover{text-decoration:underline}
+
+/* ADMIN SHELL */
+#admin-shell{display:none;min-height:100vh}
+#admin-shell.show{display:block}
+.admin-modal{background:#fff;border-radius:0;width:100%;max-width:900px;margin:0 auto;min-height:100vh;box-shadow:0 0 40px rgba(0,0,0,.08)}
+.admin-header{background:var(--navy);padding:20px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.admin-header h2{color:#fff;font-family:'Montserrat',sans-serif;font-weight:800;font-size:18px;margin:0}
+.admin-header .hdr-right{display:flex;align-items:center;gap:14px}
+.admin-header .hdr-email{color:rgba(255,255,255,.75);font-size:12px}
+.admin-close{background:var(--red);border:none;color:#fff;padding:0 14px;height:34px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif}
+.admin-tabs{display:flex;flex-wrap:wrap;border-bottom:2px solid var(--gray2);padding:0 28px;background:#fff;position:sticky;top:64px;z-index:9}
+.atab{padding:14px 20px;border:none;background:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--txt2);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:.2s}
+.atab.active{color:var(--navy);border-bottom-color:var(--navy)}
+.admin-body{padding:28px}
+.admin-section{display:none}
+.admin-section.show{display:block}
+.form-label{font-size:12px;font-weight:700;color:var(--navy);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:6px;margin-top:14px}
+.form-label:first-child{margin-top:0}
+.admin-input,.admin-select,.admin-textárea{width:100%;border:1.5px solid var(--gray2);border-radius:6px;padding:10px 14px;font-family:'Open Sans',sans-serif;font-size:13px;color:var(--txt);outline:none;transition:.2s;background:#fff}
+.admin-input:focus,.admin-select:focus,.admin-textárea:focus{border-color:var(--navy)}
+.admin-textárea{resize:vertical;min-height:80px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.btn-admin-save{background:var(--navy);color:#fff;border:none;padding:13px 32px;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;cursor:pointer;margin-top:20px;transition:.2s}
+.btn-admin-save:hover{background:var(--navy2)}
+.btn-admin-del{background:var(--red);color:#fff;border:none;padding:7px 14px;border-radius:5px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:.2s}
+.btn-admin-del:hover{background:var(--red2)}
+.imovel-list-item{background:var(--gray);border-radius:8px;padding:16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px}
+.ili-info h4{font-family:'Montserrat',sans-serif;font-weight:700;font-size:13px;color:var(--navy);margin-bottom:3px}
+.ili-info span{font-size:12px;color:var(--txt2)}
+.ili-badges{display:flex;gap:8px;margin-top:6px}
+.badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:3px;font-family:'Montserrat',sans-serif}
+.badge-red{background:rgba(192,57,43,.1);color:var(--red)}
+.badge-navy{background:rgba(26,38,87,.1);color:var(--navy)}
+.banner-item{background:var(--gray);border-radius:8px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:12px}
+.banner-item span{font-size:13px;color:#222;flex:1}
+.divider{height:1px;background:var(--gray2);margin:24px 0}
+.success-msg{background:#d4edda;color:#155724;border:1px solid #c3e6cb;padding:12px 16px;border-radius:6px;font-size:13px;font-weight:600;margin-top:12px;display:none}
+.success-msg.show{display:block}
+</style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <h2>Painel Admin</h2>
+    <p>G&amp;M Imóveis</p>
+    <input type="email" id="login-email" class="login-input" placeholder="E-mail" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
+    <input type="password" id="login-pass" class="login-input" placeholder="Senha" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button id="btn-login" class="btn-login" onclick="doLogin()">ENTRAR</button>
+    <div id="login-err" class="login-err"></div>
+    <a href="../index.html" class="login-back">&larr; Voltar ao site</a>
+  </div>
+</div>
+
+<!-- PAINEL ADMIN -->
+<div id="admin-shell">
+  <div class="admin-modal">
+    <div class="admin-header">
+      <h2>Painel Admin — G&amp;M Imóveis</h2>
+      <div class="hdr-right">
+        <span class="hdr-email" id="hdr-email"></span>
+        <button class="admin-close" onclick="fazerLogout()">SAIR</button>
+      </div>
+    </div>
+    <div class="admin-tabs">
+      <button class="atab active" onclick="showAdminTab(this,'imoveis')">&#127968; Imóveis</button>
+      <button class="atab" onclick="showAdminTab(this,'adicionar')">&#10133; Adicionar Imóvel</button>
+      <button class="atab" onclick="showAdminTab(this,'anuncios')">&#128226; Anúncios do Banner</button>
+      <button class="atab" onclick="showAdminTab(this,'sync')">&#9729;&#65039; Sincronizar</button>
+      <button class="atab" id="tab-btn-editar" onclick="showAdminTab(this,'editar')" style="display:none">✏️ Editando</button>
+    </div>
+    <div class="admin-body">
+
+      <!-- ABA IMÓVEIS -->
+      <div class="admin-section show" id="tab-imoveis">
+        <h3 style="font-family:Montserrat,sans-serif;font-weight:800;color:var(--navy);margin-bottom:16px">Imóveis Cadastrados</h3>
+        <div id="admin-imoveis-list"></div>
+      </div>
+
+      <!-- ABA ADICIONAR -->
+      <div class="admin-section" id="tab-adicionar">
+        <h3 style="font-family:Montserrat,sans-serif;font-weight:800;color:var(--navy);margin-bottom:16px">Adicionar Imóvel</h3>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">TIPO</label>
+            <select class="admin-select" id="a-tipo" onchange="toggleCamposResidencial()">
+              <option>Casa</option><option>Apartamento</option><option>Sala Comercial</option><option>Terreno</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">NEGÓCIO</label>
+            <select class="admin-select" id="a-negocio">
+              <option>Venda</option><option>Aluguel</option>
+            </select>
+          </div>
+        </div>
+        <label class="form-label">TÍTULO</label>
+        <input class="admin-input" id="a-titulo" placeholder="Ex: Casa 3 Dormitórios Centro">
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">PREÇO (R$)</label>
+            <input class="admin-input" id="a-preco" type="number" placeholder="320000">
+          </div>
+          <div>
+            <label class="form-label">BAIRRO</label>
+            <input class="admin-input" id="a-bairro" placeholder="Centro">
+          </div>
+        </div>
+        <div class="form-row-3">
+          <div>
+            <label class="form-label">ÁREA (m²)</label>
+            <input class="admin-input" id="a-area" type="number" placeholder="120">
+          </div>
+          <div id="campo-dorm">
+            <label class="form-label">DORMITÓRIOS</label>
+            <input class="admin-input" id="a-dorm" type="number" placeholder="3">
+          </div>
+          <div>
+            <label class="form-label">BANHEIROS</label>
+            <input class="admin-input" id="a-banh" type="number" placeholder="2">
+          </div>
+        </div>
+        <div id="campo-garagem">
+          <label class="form-label">GARAGEM</label>
+          <input class="admin-input" id="a-garagem" type="number" placeholder="1">
+        </div>
+        <label class="form-label">DESCRIÇÃO</label>
+        <textarea class="admin-input" id="a-descricao" rows="3" placeholder="Descreva o imóvel..."></textarea>
+        <label class="form-label">CONDOMÍNIO R$/mês</label>
+        <input class="admin-input" id="a-condominio" type="number" placeholder="380">
+        <label class="form-label">IPTU R$/mês</label>
+        <input class="admin-input" id="a-iptu" type="number" placeholder="50">
+        <label class="form-label">MOBILIADO</label>
+        <select class="admin-select" id="a-mobiliado">
+          <option value="">Não informado</option>
+          <option value="Mobiliado">Mobiliado</option>
+          <option value="Semimobiliado">Semimobiliado</option>
+          <option value="Vazio">Vazio</option>
+        </select>
+        <label class="form-label">COMODIDADES (uma por linha)</label>
+        <textarea class="admin-input" id="a-comodidades" rows="4" placeholder="Academia&#10;Elevador&#10;Piscina"></textarea>
+        <label class="form-label">FOTOS <span style="font-weight:400;text-transform:none;color:var(--txt2)">(a primeira vira a CAPA)</span></label>
+        <div id="a-fotos-preview" class="a-fotos-grid" style="display:flex;flex-wrap:wrap;gap:8px;margin:6px 0"></div>
+        <input type="file" id="a-fotos-input" accept="image/*" multiple style="display:none" onchange="adicionarFotos(this)">
+        <button onclick="document.getElementById('a-fotos-input').click()" class="btn-admin-save" style="background:var(--navy);margin-bottom:10px">+ ADICIONAR FOTOS</button>
+        <input type="hidden" id="a-fotos-json" value="[]">
+        <div id="msg-imovel" style="display:none;background:#d4edda;color:#155724;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:700">✅ Imóvel salvo!</div>
+        <button onclick="salvarImovel()" class="btn-admin-save">SALVAR IMÓVEL</button>
+      </div>
+
+      <!-- ABA ANÚNCIOS -->
+      <div class="admin-section" id="tab-anuncios" style="background:var(--navy);border-radius:8px;padding:20px">
+        <h3 style="font-family:Montserrat,sans-serif;font-weight:800;color:#fff;margin-bottom:6px">Banner de Anúncios</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,.8);margin-bottom:20px">Os textos abaixo ficam rodando em loop na faixa do site quando você adicionar.</p>
+        <div id="admin-anuncios-list"></div>
+        <div class="divider"></div>
+        <label class="form-label" style="color:#fff">NOVO ANÚNCIO</label>
+        <input class="admin-input" id="a-anuncio" placeholder='Ex: NOVO! Casa 3 dorms no Centro - R$ 320.000'>
+        <label class="form-label" style="margin-top:14px;color:#fff">FOTO DO ANÚNCIO (opcional)</label>
+        <div style="border:2px dashed rgba(255,255,255,.3);border-radius:8px;padding:16px;background:rgba(255,255,255,.1);text-align:center;cursor:pointer" onclick="document.getElementById('a-banner-img-input').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.5" width="32" height="32" style="margin:0 auto 8px;display:block"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p style="font-size:12px;color:rgba(255,255,255,.8);margin:0">Clique para selecionar uma foto do computador</p>
+          <p id="banner-img-nome" style="font-size:11px;color:rgba(255,255,255,.7);margin:6px 0 0;font-weight:600">Nenhuma imagem selecionada</p>
+        </div>
+        <input type="file" id="a-banner-img-input" accept="image/*" style="display:none" onchange="previewBannerImg(this)">
+        <input type="hidden" id="a-banner-img-data" value="">
+        <div id="banner-img-preview" style="display:none;margin-top:12px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,.3)">
+          <img id="banner-img-preview-img" style="width:100%;max-height:160px;object-fit:cover">
+          <button onclick="limparImgBanner()" style="width:100%;background:rgba(255,0,0,.7);color:#fff;border:none;padding:6px;cursor:pointer;font-size:12px;font-family:Montserrat,sans-serif;font-weight:700">REMOVER FOTO</button>
+        </div>
+        <div id="msg-anuncio" style="display:none;background:rgba(255,255,255,.2);color:#fff;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:700;margin-top:10px">✅ Anúncio adicionado!</div>
+        <button onclick="salvarAnuncio()" class="btn-admin-save" style="margin-top:12px">+ ADICIONAR AO BANNER</button>
+      </div>
+
+      <!-- ABA SINCRONIZAR -->
+      <div class="admin-section" id="tab-sync">
+        <h3 style="margin-bottom:16px;color:var(--navy)">&#9729;&#65039; Banco de Dados Online</h3>
+        <div style="background:#d4edda;border:1px solid #28a745;border-radius:8px;padding:14px;margin-bottom:20px;font-size:13px;color:#155724;line-height:1.8">
+          <strong>&#9989; Os dados ficam na nuvem!</strong><br>
+          Qualquer dispositivo que abrir o site vê os mesmos imóveis automaticamente.
+        </div>
+        <div style="padding:14px;background:#e8f4fd;border-radius:8px;font-size:12px;color:#1a5276;line-height:1.8">
+          <strong>&#128274; Acesso ao painel:</strong><br>
+          Este painel agora fica em um endereço próprio, separado do site público, e só abre com login e senha cadastrados no Firebase Authentication do projeto.
+        </div>
+      </div>
+
+      <!-- ABA EDITAR IMÓVEL -->
+      <div class="admin-section" id="tab-editar">
+        <h3 style="font-family:Montserrat,sans-serif;font-weight:800;color:var(--navy);margin-bottom:16px">✏️ Editar Imóvel</h3>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">TIPO</label>
+            <select class="admin-select" id="e-tipo">
+              <option>Casa</option><option>Apartamento</option><option>Sala Comercial</option><option>Terreno</option><option>Kitnet</option><option>Cobertura</option><option>Galpão</option><option>Conjunto de Salas</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">NEGÓCIO</label>
+            <select class="admin-select" id="e-negocio">
+              <option>Aluguel</option><option>Venda</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="form-label">TÍTULO</label>
+          <input class="admin-input" id="e-titulo" placeholder="Ex: Apartamento 2 dormitórios para locação">
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">PREÇO (R$)</label>
+            <input class="admin-input" id="e-preco" type="number" placeholder="1500">
+          </div>
+          <div>
+            <label class="form-label">BAIRRO / ENDEREÇO</label>
+            <input class="admin-input" id="e-bairro" placeholder="Centro - Uruguaiana">
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div>
+            <label class="form-label">CONDOMÍNIO R$/mês (opcional)</label>
+            <input class="admin-input" id="e-condominio" type="number" placeholder="0">
+          </div>
+          <div>
+            <label class="form-label">IPTU R$/mês (opcional)</label>
+            <input class="admin-input" id="e-iptu" type="number" placeholder="0">
+          </div>
+        </div>
+        <div>
+          <label class="form-label">MOBILIADO</label>
+          <select class="admin-select" id="e-mobiliado">
+            <option value="">Não informado</option>
+            <option value="Mobiliado">Mobiliado</option>
+            <option value="Semimobiliado">Semimobiliado</option>
+            <option value="Vazio">Vazio</option>
+          </select>
+        </div>
+        <div class="form-row-3">
+          <div>
+            <label class="form-label">ÁREA (m²)</label>
+            <input class="admin-input" id="e-area" type="number" placeholder="60">
+          </div>
+          <div>
+            <label class="form-label">DORMITÓRIOS</label>
+            <input class="admin-input" id="e-dorm" type="number" placeholder="2">
+          </div>
+          <div>
+            <label class="form-label">BANHEIROS</label>
+            <input class="admin-input" id="e-banh" type="number" placeholder="1">
+          </div>
+        </div>
+        <div>
+          <label class="form-label">GARAGEM</label>
+          <input class="admin-input" id="e-garagem" type="number" placeholder="0">
+        </div>
+        <div>
+          <label class="form-label">DESCRIÇÃO</label>
+          <textarea class="admin-input" id="e-descricao" rows="4" placeholder="Descreva o imóvel..."></textarea>
+        </div>
+        <div>
+          <label class="form-label">COMODIDADES (uma por linha)</label>
+          <textarea class="admin-input" id="e-comodidades" rows="4" placeholder="Churrasqueira&#10;Piscina&#10;Academia"></textarea>
+        </div>
+
+        <!-- FOTOS -->
+        <div>
+          <label class="form-label">FOTOS DO IMÓVEL <span style="font-weight:400;text-transform:none;color:var(--txt2)">(a primeira é a CAPA)</span></label>
+          <div id="e-fotos-preview" style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0;align-items:flex-start"></div>
+          <label style="display:inline-flex;align-items:center;gap:8px;background:var(--navy);color:#fff;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:Montserrat,sans-serif;margin-top:4px">
+            📷 Adicionar Fotos
+            <input type="file" accept="image/*" multiple onchange="adicionarFotosEdicao(this)" style="display:none">
+          </label>
+          <p style="font-size:11px;color:#999;margin-top:6px">Clique no X para remover uma foto. Use as setas ◀ ▶ para reordenar (a primeira é sempre a capa).</p>
+        </div>
+
+        <div style="margin-top:16px;display:flex;gap:12px">
+          <button onclick="salvarEdicaoImovel()" class="btn-admin-save">💾 SALVAR ALTERAÇÕES</button>
+          <button onclick="cancelarEdicao()" class="btn-admin-del">✕ Cancelar</button>
+        </div>
+        <div id="msg-editar" style="display:none;background:rgba(30,58,138,.1);color:var(--navy);padding:10px 14px;border-radius:6px;font-size:13px;font-weight:700;margin-top:10px">✅ Imóvel atualizado!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase (compat SDK, mesmo padrão vanilla-JS do restante do projeto) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script>
+// ── CONFIGURAÇÃO FIREBASE (não é segredo: a segurança vem da Autenticação + Regras do Realtime Database) ──
+var firebaseConfig = {
+  apiKey: "AIzaSyDDNurR63QaZk9nSk7uCOcgi_fgHHkQi6Q",
+  authDomain: "gm-imoveis.firebaseapp.com",
+  databaseURL: "https://gm-imoveis-default-rtdb.firebaseio.com",
+  projectId: "gm-imoveis",
+  storageBucket: "gm-imoveis.firebasestorage.app",
+  messagingSenderId: "472898884610",
+  appId: "1:472898884610:web:a10fa9a65bb29b3fd9831b",
+  measurementId: "G-5FEM27VRZV"
+};
+firebase.initializeApp(firebaseConfig);
+var FIREBASE_URL = firebaseConfig.databaseURL;
+
+var imoveis = [];
+var anuncios = [];
+
+// ── LOGIN / SESSÃO (Firebase Authentication) ──
+function doLogin(){
+  var email = document.getElementById('login-email').value.trim();
+  var pass = document.getElementById('login-pass').value;
+  var btn = document.getElementById('btn-login');
+  var err = document.getElementById('login-err');
+  err.classList.remove('show');
+  if(!email || !pass){
+    err.textContent = 'Preencha e-mail e senha.';
+    err.classList.add('show');
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'ENTRANDO...';
+  firebase.auth().signInWithEmailAndPassword(email, pass)
+    .catch(function(e){
+      err.textContent = 'E-mail ou senha incorretos.';
+      err.classList.add('show');
+    })
+    .finally(function(){
+      btn.disabled = false; btn.textContent = 'ENTRAR';
+    });
+}
+
+function fazerLogout(){
+  firebase.auth().signOut();
+}
+
+firebase.auth().onAuthStateChanged(function(user){
+  if(user){
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-shell').classList.add('show');
+    document.getElementById('hdr-email').textContent = user.email || '';
+    carregarDados();
+  }else{
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('admin-shell').classList.remove('show');
+  }
+});
+
+// ── CARREGAR DADOS (leitura pública, igual ao site) ──
+function carregarDados(){
+  fetch(FIREBASE_URL+'/dados.json')
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d){
+        imoveis = d.imoveis || [];
+        anuncios = (d.anuncios || []).map(function(a){return typeof a==='string'?{texto:a,imagem:''}:a;});
+      }
+      renderAdminImoveis();
+      renderAdminAnuncios();
+    })
+    .catch(function(){
+      document.getElementById('admin-imoveis-list').innerHTML = '<p style="color:var(--red);font-size:13px">Não foi possível carregar os dados. Verifique sua conexão e tente novamente.</p>';
+    });
+}
+
+// ── SALVAR DADOS (escrita autenticada: exige usuário logado, sem senha exposta no código) ──
+function salvarDados(){
+  var user = firebase.auth().currentUser;
+  if(!user){ alert('Sessão expirada. Faça login novamente.'); return; }
+  user.getIdToken().then(function(idToken){
+    fetch(FIREBASE_URL+'/dados.json?auth='+idToken,{
+      method:'PUT',
+      body:JSON.stringify({imoveis:imoveis,anuncios:anuncios}),
+      headers:{'Content-Type':'application/json'}
+    }).catch(function(){
+      alert('Não foi possível salvar. Verifique sua conexão e tente novamente.');
+    });
+  });
+}
+
+function setData(k,v){
+  if(k==='gm_imoveis')imoveis=v;
+  if(k==='gm_anuncios')anuncios=v.map(function(a){return typeof a==='string'?{texto:a,imagem:''}:a;});
+  salvarDados();
+}
+
+// ── EDITAR IMÓVEL ──
+var _editandoId = null;
+
+function abrirEditarImovel(id){
+  var im = imoveis.find(function(x){return x.id===id;});
+  if(!im) return;
+  _editandoId = id;
+  document.getElementById('e-tipo').value = im.tipo || 'Casa';
+  document.getElementById('e-negocio').value = im.negocio || 'Aluguel';
+  document.getElementById('e-titulo').value = im.titulo || '';
+  document.getElementById('e-preco').value = im.preco || '';
+  document.getElementById('e-bairro').value = im.bairro || '';
+  document.getElementById('e-condominio').value = im.condominio || '';
+  document.getElementById('e-iptu').value = im.iptu || '';
+  var eMobil=document.getElementById('e-mobiliado');if(eMobil)eMobil.value=im.mobiliado||'';
+  document.getElementById('e-area').value = im.area || '';
+  document.getElementById('e-dorm').value = im.dorm || '';
+  document.getElementById('e-banh').value = im.banh || '';
+  document.getElementById('e-garagem').value = im.garagem || '';
+  document.getElementById('e-descricao').value = im.descricao || '';
+  document.getElementById('e-comodidades').value = (im.comodidades||[]).join('
+');
+  _editFotos = im.fotos ? im.fotos.slice() : (im.foto ? [im.foto] : []);
+  renderFotosEdicao();
+  var tabBtn = document.getElementById('tab-btn-editar');
+  tabBtn.style.display = '';
+  tabBtn.click();
+}
+
+var _editFotos = [];
+
+function renderFotosEdicao(){
+  var preview = document.getElementById('e-fotos-preview');
+  if(!preview) return;
+  preview.innerHTML = _editFotos.map(function(f,i){
+    return '<div style="position:relative;display:inline-block">'
+      +'<img src="'+f+'" style="width:80px;height:60px;object-fit:cover;border-radius:6px;border:2px solid '+(i===0?'#1e3a8a':'#ddd')+'">'
+      +(i===0?'<span style="position:absolute;bottom:2px;left:2px;background:#1e3a8a;color:#fff;font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px">CAPA</span>':'')
+      +'<button onclick="removerFotoEdicao('+i+')" style="position:absolute;top:-6px;right:-6px;background:#e53e3e;color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;line-height:20px;padding:0">✕</button>'
+      +'<div style="display:flex;justify-content:center;gap:2px;margin-top:2px">'
+      +'<button onclick="moverFotoEdicao('+i+',-1)" '+(i===0?'disabled style="opacity:.3;cursor:default;':'style="cursor:pointer;')+'border:1px solid #ccc;background:#fff;border-radius:4px;width:24px;height:20px;font-size:11px;line-height:1;padding:0">◀</button>'
+      +'<button onclick="moverFotoEdicao('+i+',1)" '+(i===_editFotos.length-1?'disabled style="opacity:.3;cursor:default;':'style="cursor:pointer;')+'border:1px solid #ccc;background:#fff;border-radius:4px;width:24px;height:20px;font-size:11px;line-height:1;padding:0">▶</button>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+}
+
+function moverFotoEdicao(i, dir){
+  var j = i + dir;
+  if(j < 0 || j >= _editFotos.length) return;
+  var tmp = _editFotos[i];
+  _editFotos[i] = _editFotos[j];
+  _editFotos[j] = tmp;
+  renderFotosEdicao();
+}
+
+function removerFotoEdicao(i){
+  _editFotos.splice(i,1);
+  renderFotosEdicao();
+}
+
+function adicionarFotosEdicao(input){
+  var files = Array.from(input.files);
+  var total = files.length;
+  var loaded = 0;
+  files.forEach(function(file){
+    comprimirImagem(file, function(dataUrl){
+      _editFotos.push(dataUrl);
+      loaded++;
+      if(loaded === total) renderFotosEdicao();
+    });
+  });
+}
+
+function salvarEdicaoImovel(){
+  if(!_editandoId) return;
+  var idx = imoveis.findIndex(function(x){return x.id===_editandoId;});
+  if(idx === -1) return;
+  imoveis[idx].tipo = document.getElementById('e-tipo').value;
+  imoveis[idx].negocio = document.getElementById('e-negocio').value;
+  imoveis[idx].titulo = document.getElementById('e-titulo').value.trim();
+  imoveis[idx].preco = parseFloat(document.getElementById('e-preco').value) || 0;
+  imoveis[idx].bairro = document.getElementById('e-bairro').value.trim();
+  imoveis[idx].condominio = document.getElementById('e-condominio').value || '';
+  imoveis[idx].iptu = document.getElementById('e-iptu').value || '';
+  imoveis[idx].mobiliado = (document.getElementById('e-mobiliado')||{}).value||'';
+  imoveis[idx].area = parseFloat(document.getElementById('e-area').value) || 0;
+  imoveis[idx].dorm = parseInt(document.getElementById('e-dorm').value) || 0;
+  imoveis[idx].banh = parseInt(document.getElementById('e-banh').value) || 0;
+  imoveis[idx].garagem = parseInt(document.getElementById('e-garagem').value) || 0;
+  imoveis[idx].descricao = document.getElementById('e-descricao').value.trim();
+  var comodStr = document.getElementById('e-comodidades').value.trim();
+  imoveis[idx].comodidades = comodStr ? comodStr.split('
+').map(function(c){return c.trim();}).filter(Boolean) : [];
+  imoveis[idx].fotos = _editFotos.slice();
+  if(_editFotos.length > 0) imoveis[idx].foto = _editFotos[0];
+  setData('gm_imoveis', imoveis);
+  renderAdminImoveis();
+  document.getElementById('msg-editar').style.display = 'block';
+  setTimeout(function(){document.getElementById('msg-editar').style.display='none';}, 2500);
+}
+
+function cancelarEdicao(){
+  _editandoId = null;
+  var tabBtn = document.getElementById('tab-btn-editar');
+  tabBtn.style.display = 'none';
+  document.querySelector('.atab.active') && document.querySelector('.atab.active').classList.remove('active');
+  var tabIm = document.querySelector('[onclick*="imoveis"]');
+  if(tabIm) tabIm.click();
+}
+
+// ── NAVEGAÇÃO DAS ABAS ──
+function showAdminTab(el,tab){
+  document.querySelectorAll('.atab').forEach(function(t){t.classList.remove('active');});
+  document.querySelectorAll('.admin-section').forEach(function(s){s.classList.remove('show');});
+  el.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('show');
+}
+
+function renderAdminImoveis(){
+  var list=document.getElementById('admin-imoveis-list');
+  if(!imoveis.length){list.innerHTML='<p style="color:var(--txt2);font-size:13px;padding:20px 0">Nenhum imóvel cadastrado ainda.</p>';return;}
+  function _grupoHtml(negocio){
+    var itens=imoveis.filter(function(im){return im.negocio===negocio;});
+    if(!itens.length)return '';
+    var html='<h4 style="font-family:Montserrat,sans-serif;font-weight:900;color:var(--navy);margin:20px 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--gray2);padding-bottom:6px">'+negocio+' ('+itens.length+')</h4>';
+    html+=itens.map(function(im,i){
+      var pf=im.negocio==='Aluguel'?'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2})+'/mês':'R$ '+Math.round(im.preco).toLocaleString('pt-BR',{minimumFractionDigits:2});
+      var upAttr=i===0?'disabled style="opacity:.3;cursor:default;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"':'style="cursor:pointer;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"';
+      var downAttr=i===itens.length-1?'disabled style="opacity:.3;cursor:default;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"':'style="cursor:pointer;border:1px solid #ccc;background:#fff;border-radius:4px;width:26px;height:22px;font-size:11px;line-height:1;padding:0"';
+      return '<div class="imovel-list-item"><div style="display:flex;flex-direction:column;gap:3px;flex-shrink:0"><button '+upAttr+' onclick="moverImovelAdmin('+im.id+',-1)" title="Mover para cima">▲</button><button '+downAttr+' onclick="moverImovelAdmin('+im.id+',1)" title="Mover para baixo">▼</button></div><div class="ili-info"><h4>'+im.titulo+'</h4><span>'+im.bairro+'</span><div class="ili-badges"><span class="badge badge-navy">'+im.tipo+'</span><span class="badge badge-red">'+im.negocio+'</span><span class="badge">'+pf+'</span></div></div><div style="display:flex;gap:8px;flex-shrink:0"><button class="btn-admin-save" style="background:var(--navy);font-size:12px;padding:8px 14px" onclick="abrirEditarImovel('+im.id+')">✏️ Editar</button><button class="btn-admin-del" onclick="deletarImovel('+im.id+')">Remover</button></div></div>';
+    }).join('');
+    return html;
+  }
+  list.innerHTML=_grupoHtml('Venda')+_grupoHtml('Aluguel');
+}
+
+function moverImovelAdmin(id,dir){
+  var idx=imoveis.findIndex(function(x){return x.id===id;});
+  if(idx===-1)return;
+  var negocio=imoveis[idx].negocio;
+  var mesmosIdx=[];
+  imoveis.forEach(function(im,i){if(im.negocio===negocio)mesmosIdx.push(i);});
+  var posNoGrupo=mesmosIdx.indexOf(idx);
+  var novaPos=posNoGrupo+dir;
+  if(novaPos<0||novaPos>=mesmosIdx.length)return;
+  var idxAlvo=mesmosIdx[novaPos];
+  var tmp=imoveis[idx];
+  imoveis[idx]=imoveis[idxAlvo];
+  imoveis[idxAlvo]=tmp;
+  setData('gm_imoveis',imoveis);
+  renderAdminImoveis();
+}
+
+function renderAdminAnuncios(){
+  var list=document.getElementById('admin-anuncios-list');
+  if(!anuncios.length){list.innerHTML='<p style="color:rgba(255,255,255,.6);font-size:13px">Nenhum anúncio cadastrado.</p>';return;}
+  list.innerHTML=anuncios.map(function(a,i){
+    var txt=typeof a==='object'?a.texto:a;
+    var img=typeof a==='object'&&a.imagem?'<img src="'+a.imagem+'" style="height:40px;width:60px;object-fit:cover;border-radius:4px;margin-right:10px;flex-shrink:0">':'';
+    return '<div class="banner-item">'+img+'<span>'+txt+'</span><button class="btn-admin-del" onclick="deletarAnuncio('+i+')">Remover</button></div>';
+  }).join('');
+}
+
+function toggleCamposResidencial(){
+  var tipo=document.getElementById('a-tipo').value;
+  var semDorm=(tipo==='Sala Comercial'||tipo==='Terreno');
+  var semGaragem=(tipo==='Terreno');
+  var cd=document.getElementById('campo-dorm');
+  var cg=document.getElementById('campo-garagem');
+  if(cd)cd.style.display=semDorm?'none':'';
+  if(cg)cg.style.display=semGaragem?'none':'';
+}
+
+// ── Compressão de fotos (evita estourar limite do Firebase) ──
+function comprimirImagem(file, cb){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var MAX_W = 1280;
+      var w = img.width, h = img.height;
+      if(w > MAX_W){ h = Math.round(h * (MAX_W / w)); w = MAX_W; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.72);
+      cb(dataUrl);
+    };
+    img.onerror = function(){ cb(e.target.result); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function adicionarFotos(input){
+  if(!input.files||!input.files.length)return;
+  var preview=document.getElementById('a-fotos-preview');
+  var fotosInput=document.getElementById('a-fotos-json');
+  var fotos=JSON.parse(fotosInput.value||'[]');
+  Array.from(input.files).forEach(function(file){
+    comprimirImagem(file, function(dataUrl){
+      fotos.push(dataUrl);
+      fotosInput.value=JSON.stringify(fotos);
+      var idx=fotos.length-1;
+      var wrap=document.createElement('div');wrap.className='foto-thumb-wrap';
+      wrap.innerHTML='<img src="'+dataUrl+'" class="foto-thumb" style="width:70px;height:52px;object-fit:cover;border-radius:6px"><button type="button" class="foto-del" onclick="removerFoto('+idx+')" style="margin-left:4px">&#215;</button>';
+      preview.appendChild(wrap);
+    });
+  });
+  input.value='';
+}
+
+function removerFoto(idx){
+  var fotosInput=document.getElementById('a-fotos-json');
+  var fotos=JSON.parse(fotosInput.value||'[]');
+  fotos.splice(idx,1);
+  fotosInput.value=JSON.stringify(fotos);
+  var preview=document.getElementById('a-fotos-preview');
+  preview.innerHTML='';
+  fotos.forEach(function(f,i){
+    var wrap=document.createElement('div');wrap.className='foto-thumb-wrap';
+    wrap.innerHTML='<img src="'+f+'" class="foto-thumb" style="width:70px;height:52px;object-fit:cover;border-radius:6px"><button type="button" class="foto-del" onclick="removerFoto('+i+')" style="margin-left:4px">&#215;</button>';
+    preview.appendChild(wrap);
+  });
+}
+
+function previewBannerImg(input){
+  if(!input.files||!input.files[0])return;
+  comprimirImagem(input.files[0], function(dataUrl){
+    document.getElementById('a-banner-img-data').value=dataUrl;
+    document.getElementById('banner-img-preview-img').src=dataUrl;
+    document.getElementById('banner-img-preview').style.display='block';
+    document.getElementById('banner-img-nome').textContent=input.files[0].name;
+  });
+}
+
+function limparImgBanner(){
+  document.getElementById('a-banner-img-data').value='';
+  document.getElementById('banner-img-preview').style.display='none';
+  document.getElementById('banner-img-nome').textContent='Nenhuma imagem selecionada';
+}
+
+function salvarImovel(){
+  var titulo=document.getElementById('a-titulo').value.trim();
+  var preco=parseFloat(document.getElementById('a-preco').value)||0;
+  if(!titulo){alert('Preencha pelo menos o Título.');return;}
+  var fotosJson=document.getElementById('a-fotos-json').value;
+  var fotos=[];try{fotos=JSON.parse(fotosJson);}catch(e){}
+  var novo={id:Date.now(),tipo:document.getElementById('a-tipo').value,negocio:document.getElementById('a-negocio').value,titulo:titulo,preco:preco,bairro:document.getElementById('a-bairro').value||'Uruguaiana',area:parseInt(document.getElementById('a-area').value)||0,dorm:parseInt(document.getElementById('a-dorm').value)||0,banh:parseInt(document.getElementById('a-banh').value)||0,garagem:parseInt(document.getElementById('a-garagem').value)||0,descricao:document.getElementById('a-descricao').value,condominio:parseFloat((document.getElementById('a-condominio')||{}).value)||0,iptu:parseFloat((document.getElementById('a-iptu')||{}).value)||0,mobiliado:(document.getElementById('a-mobiliado')||{}).value||'',comodidades:(function(){var el=document.getElementById('a-comodidades');return el?el.value.split('
+').map(function(c){return c.trim();}).filter(function(c){return c;}):[]; })(),fotos:fotos};
+  if(fotos.length>0) novo.foto = fotos[0];
+  imoveis.unshift(novo);setData('gm_imoveis',imoveis);
+  renderAdminImoveis();
+  document.getElementById('msg-imovel').classList.add('show');
+  setTimeout(function(){document.getElementById('msg-imovel').classList.remove('show');},3000);
+  ['a-titulo','a-preco','a-bairro','a-area','a-dorm','a-banh','a-garagem','a-descricao'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('a-fotos-json').value='[]';
+  document.getElementById('a-fotos-preview').innerHTML='';
+}
+
+function deletarImovel(id){
+  if(!confirm('Remover este imóvel do site?'))return;
+  imoveis=imoveis.filter(function(im){return im.id!==id;});
+  setData('gm_imoveis',imoveis);renderAdminImoveis();
+}
+
+function salvarAnuncio(){
+  var txt=document.getElementById('a-anuncio').value.trim();
+  var img=document.getElementById('a-banner-img-data').value;
+  anuncios.push({texto:txt,imagem:img});setData('gm_anuncios',anuncios);
+  renderAdminAnuncios();
+  document.getElementById('msg-anuncio').classList.add('show');
+  setTimeout(function(){document.getElementById('msg-anuncio').classList.remove('show');},3000);
+  document.getElementById('a-anuncio').value='';limparImgBanner();
+}
+
+function deletarAnuncio(i){
+  anuncios.splice(i,1);setData('gm_anuncios',anuncios);renderAdminAnuncios();
+}
+</script>
+</body>
+</html>
