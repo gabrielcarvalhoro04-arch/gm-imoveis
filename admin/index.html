@@ -435,8 +435,7 @@ function abrirEditarImovel(id){
   document.getElementById('e-banh').value = im.banh || '';
   document.getElementById('e-garagem').value = im.garagem || '';
   document.getElementById('e-descricao').value = im.descricao || '';
-  document.getElementById('e-comodidades').value = (im.comodidades||[]).join('
-');
+  document.getElementById('e-comodidades').value = (im.comodidades||[]).join('\n');
   _editFotos = im.fotos ? im.fotos.slice() : (im.foto ? [im.foto] : []);
   renderFotosEdicao();
   var tabBtn = document.getElementById('tab-btn-editar');
@@ -507,8 +506,7 @@ function salvarEdicaoImovel(){
   imoveis[idx].garagem = parseInt(document.getElementById('e-garagem').value) || 0;
   imoveis[idx].descricao = document.getElementById('e-descricao').value.trim();
   var comodStr = document.getElementById('e-comodidades').value.trim();
-  imoveis[idx].comodidades = comodStr ? comodStr.split('
-').map(function(c){return c.trim();}).filter(Boolean) : [];
+  imoveis[idx].comodidades = comodStr ? comodStr.split('\n').map(function(c){return c.trim();}).filter(Boolean) : [];
   imoveis[idx].fotos = _editFotos.slice();
   if(_editFotos.length > 0) imoveis[idx].foto = _editFotos[0];
   setData('gm_imoveis', imoveis);
@@ -665,8 +663,7 @@ function salvarImovel(){
   if(!titulo){alert('Preencha pelo menos o Título.');return;}
   var fotosJson=document.getElementById('a-fotos-json').value;
   var fotos=[];try{fotos=JSON.parse(fotosJson);}catch(e){}
-  var novo={id:Date.now(),tipo:document.getElementById('a-tipo').value,negocio:document.getElementById('a-negocio').value,titulo:titulo,preco:preco,bairro:document.getElementById('a-bairro').value||'Uruguaiana',area:parseInt(document.getElementById('a-area').value)||0,dorm:parseInt(document.getElementById('a-dorm').value)||0,banh:parseInt(document.getElementById('a-banh').value)||0,garagem:parseInt(document.getElementById('a-garagem').value)||0,descricao:document.getElementById('a-descricao').value,condominio:parseFloat((document.getElementById('a-condominio')||{}).value)||0,iptu:parseFloat((document.getElementById('a-iptu')||{}).value)||0,mobiliado:(document.getElementById('a-mobiliado')||{}).value||'',comodidades:(function(){var el=document.getElementById('a-comodidades');return el?el.value.split('
-').map(function(c){return c.trim();}).filter(function(c){return c;}):[]; })(),fotos:fotos};
+  var novo={id:Date.now(),tipo:document.getElementById('a-tipo').value,negocio:document.getElementById('a-negocio').value,titulo:titulo,preco:preco,bairro:document.getElementById('a-bairro').value||'Uruguaiana',area:parseInt(document.getElementById('a-area').value)||0,dorm:parseInt(document.getElementById('a-dorm').value)||0,banh:parseInt(document.getElementById('a-banh').value)||0,garagem:parseInt(document.getElementById('a-garagem').value)||0,descricao:document.getElementById('a-descricao').value,condominio:parseFloat((document.getElementById('a-condominio')||{}).value)||0,iptu:parseFloat((document.getElementById('a-iptu')||{}).value)||0,mobiliado:(document.getElementById('a-mobiliado')||{}).value||'',comodidades:(function(){var el=document.getElementById('a-comodidades');return el?el.value.split('\n').map(function(c){return c.trim();}).filter(function(c){return c;}):[]; })(),fotos:fotos};
   if(fotos.length>0) novo.foto = fotos[0];
   imoveis.unshift(novo);setData('gm_imoveis',imoveis);
   renderAdminImoveis();
