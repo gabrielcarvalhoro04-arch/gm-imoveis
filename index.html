@@ -1447,7 +1447,7 @@ function renderHeroSlider(){
   if(!hero||!dotsContainer)return;
   var oldSlides=hero.querySelectorAll('.slide[data-anuncio]');
   oldSlides.forEach(function(s){s.remove();});
-  var comImagem=anuncios.filter(function(a){return a.imagem&&a.imagem.length>0;});
+  var comImagem=anuncios.filter(function(a){return a.imagem&&a.imagem.length>0&&a.ativo!==false;});
   var defaultSlides=hero.querySelectorAll('.slide[data-default]');
   if(comImagem.length>0){
     defaultSlides.forEach(function(s){s.style.display='none';});
