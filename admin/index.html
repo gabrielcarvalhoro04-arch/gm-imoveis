@@ -658,7 +658,7 @@ var firebaseConfig = {
   appId: "1:472898884610:web:a10fa9a65bb29b3fd9831b",
   measurementId: "G-5FEM27VRZV"
 };
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
 var FIREBASE_URL = firebaseConfig.databaseURL;
 
 var imoveis = [];
