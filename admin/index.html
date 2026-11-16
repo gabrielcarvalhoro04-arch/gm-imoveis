@@ -937,16 +937,62 @@ function carregarDados(){
 function salvarDados(){
   var user = firebase.auth().currentUser;
   if(!user) return Promise.reject(new Error('Sessão expirada. Faça login novamente.'));
+  // Imóveis já separados (com "fv") guardam as fotos em /fotos/<id>; aqui vai só a capa leve.
+  var lista = imoveis.map(function(im){
+    if(!im.fv) return im;
+    var c = Object.assign({}, im); delete c.fotos; delete c.foto; return c;
+  });
   return user.getIdToken().then(function(idToken){
     return fetch(FIREBASE_URL+'/dados.json?auth='+idToken,{
       method:'PUT',
-      body:JSON.stringify({imoveis:imoveis,anuncios:anuncios}),
+      body:JSON.stringify({imoveis:lista,anuncios:anuncios,versao:Date.now()}),
       headers:{'Content-Type':'application/json'}
     }).then(function(r){
       if(!r.ok) throw new Error('Falha ao salvar (status '+r.status+').');
       return true;
     });
   });
+}
+
+// Capa reduzida usada na vitrine do site (a foto original continua guardada em /fotos/<id>).
+function gerarCapa(dataUrl){
+  return new Promise(function(res){
+    var img = new Image();
+    img.onload = function(){
+      var MAX = 640, w = img.width, h = img.height;
+      if(w > MAX){ h = Math.round(h * (MAX / w)); w = MAX; }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      // WebP fica ~25% menor; navegadores que não geram WebP recebem JPEG.
+      var webp = canvas.toDataURL('image/webp', 0.7);
+      res(webp.indexOf('data:image/webp') === 0 ? webp : canvas.toDataURL('image/jpeg', 0.72));
+    };
+    img.onerror = function(){ res(dataUrl); };
+    img.src = dataUrl;
+  });
+}
+
+// Grava a lista completa de fotos do imóvel e devolve os campos leves para /dados.
+function gravarFotosImovel(id, fotos){
+  var user = firebase.auth().currentUser;
+  if(!user) return Promise.reject(new Error('Sessão expirada. Faça login novamente.'));
+  return Promise.all([user.getIdToken(), fotos.length ? gerarCapa(fotos[0]) : Promise.resolve('')]).then(function(r){
+    var opts = fotos.length
+      ? {method:'PUT', body:JSON.stringify(fotos), headers:{'Content-Type':'application/json'}}
+      : {method:'DELETE'};
+    return fetch(FIREBASE_URL+'/fotos/'+encodeURIComponent(id)+'.json?auth='+r[0], opts).then(function(resp){
+      if(!resp.ok) throw new Error('Falha ao salvar as fotos (status '+resp.status+').');
+      return {capa:r[1], nfotos:fotos.length, fv:Date.now()};
+    });
+  });
+}
+
+function fotosDoImovel(im){
+  if(!im.fv) return Promise.resolve(im.fotos ? im.fotos.slice() : (im.foto ? [im.foto] : []));
+  return fetch(FIREBASE_URL+'/fotos/'+encodeURIComponent(im.id)+'.json')
+    .then(function(r){ if(!r.ok) throw new Error('status '+r.status); return r.json(); })
+    .then(function(f){ return Array.isArray(f) ? f.filter(Boolean) : []; });
 }
 
 function setData(k,v){
@@ -1027,7 +1073,7 @@ function renderAdminImoveis(){
   grid.innerHTML = visiveis.map(function(im){
     var mesmosGrupo = imoveis.filter(function(x){return x.negocio===im.negocio;});
     var posNoGrupo = mesmosGrupo.indexOf(im);
-    var foto = im.foto || (im.fotos&&im.fotos[0]) || '';
+    var foto = im.capa || im.foto || (im.fotos&&im.fotos[0]) || '';
     var badgeCls = im.negocio==='Venda' ? 'venda' : 'aluguel';
     var badgeTxt = im.negocio==='Venda' ? 'À venda' : 'Para locação';
     return '<div class="im-card" draggable="true" ondragstart="imovelDragStart(event,'+gmId(im.id)+')" ondragover="event.preventDefault()" ondrop="imovelDrop(event,'+gmId(im.id)+')">'
@@ -1106,7 +1152,10 @@ function deletarImovel(id){
   var backup = imoveis.slice();
   imoveis=imoveis.filter(function(im){return im.id!==id;});
   renderAdminImoveis();
-  setData('gm_imoveis',imoveis).catch(function(err){
+  var removido = backup.find(function(im){return im.id===id;});
+  setData('gm_imoveis',imoveis).then(function(){
+    if(removido && removido.fv) gravarFotosImovel(id, []).catch(function(){});
+  }).catch(function(err){
     imoveis = backup;
     renderAdminImoveis();
     alert('Não foi possível remover o imóvel: '+err.message);
@@ -1118,6 +1167,8 @@ function deletarImovel(id){
    ========================================================= */
 var _editandoId = null; // null = cadastrando novo; caso contrário, id do imóvel em edição
 var _formFotos = [];    // array de dataURLs da(s) foto(s) do imóvel no formulário
+var _formFotosOriginais = '[]'; // fotos como estavam ao abrir o formulário (detecta alteração)
+var _formFotosProntas = true;
 
 function toggleCamposResidencial(){
   var tipo=document.getElementById('f-tipo').value;
@@ -1132,6 +1183,8 @@ function toggleCamposResidencial(){
 function limparFormImovel(){
   _editandoId = null;
   _formFotos = [];
+  _formFotosOriginais = '[]';
+  _formFotosProntas = true;
   ['f-titulo','f-preco','f-bairro','f-area','f-dorm','f-banh','f-garagem','f-descricao','f-comodidades','f-condominio','f-iptu'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.value='';
   });
@@ -1168,7 +1221,20 @@ function abrirEditarImovel(id){
   document.getElementById('f-garagem').value = im.garagem || '';
   document.getElementById('f-descricao').value = im.descricao || '';
   document.getElementById('f-comodidades').value = (im.comodidades||[]).join('\n');
-  _formFotos = im.fotos ? im.fotos.slice() : (im.foto ? [im.foto] : []);
+  _formFotos = [];
+  _formFotosProntas = false;
+  mostrarMsg('msg-imovel', 'Carregando fotos...', true);
+  fotosDoImovel(im).then(function(f){
+    if(_editandoId !== id) return;
+    _formFotosOriginais = JSON.stringify(f);
+    _formFotos = f.concat(_formFotos);
+    _formFotosProntas = true;
+    document.getElementById('msg-imovel').style.display = 'none';
+    _syncFotosJson();
+    renderFotosForm();
+  }).catch(function(){
+    if(_editandoId === id) mostrarMsg('msg-imovel', 'Não foi possível carregar as fotos. Feche e abra o imóvel novamente.', false);
+  });
   document.getElementById('f-fotos-json').value = JSON.stringify(_formFotos);
   toggleCamposResidencial();
   renderFotosForm();
@@ -1287,10 +1353,9 @@ function salvarFormImovel(){
     condominio: parseFloat(document.getElementById('f-condominio').value)||0,
     iptu: parseFloat(document.getElementById('f-iptu').value)||0,
     mobiliado: document.getElementById('f-mobiliado').value||'',
-    comodidades: document.getElementById('f-comodidades').value.split('\n').map(function(c){return c.trim();}).filter(Boolean),
-    fotos: _formFotos.slice()
+    comodidades: document.getElementById('f-comodidades').value.split('\n').map(function(c){return c.trim();}).filter(Boolean)
   };
-  if(_formFotos.length>0) dados.foto = _formFotos[0];
+  if(!_formFotosProntas){ alert('Aguarde as fotos terminarem de carregar.'); return; }
 
   var btn = document.getElementById('btn-salvar-imovel');
   btn.disabled = true;
@@ -1298,16 +1363,24 @@ function salvarFormImovel(){
   btn.textContent = 'Salvando...';
 
   var backup = imoveis.slice();
-  if(_editandoId){
-    var idx = imoveis.findIndex(function(x){return x.id===_editandoId;});
-    if(idx===-1){ btn.disabled=false; btn.textContent=textoOriginal; return; }
-    imoveis[idx] = Object.assign({}, imoveis[idx], dados);
-  }else{
-    dados.id = Date.now();
-    imoveis.unshift(dados);
-  }
+  var anterior = _editandoId ? imoveis.find(function(x){return x.id===_editandoId;}) : null;
+  var id = _editandoId || Date.now();
+  var fotos = _formFotos.slice();
+  var gravarFotos = !anterior || !anterior.fv || JSON.stringify(fotos) !== _formFotosOriginais;
 
-  setData('gm_imoveis', imoveis).then(function(){
+  (gravarFotos ? gravarFotosImovel(id, fotos) : Promise.resolve(null)).then(function(meta){
+    if(meta) Object.assign(dados, meta);
+    if(_editandoId){
+      var idx = imoveis.findIndex(function(x){return x.id===_editandoId;});
+      if(idx===-1) throw new Error('Imóvel não encontrado.');
+      imoveis[idx] = Object.assign({}, imoveis[idx], dados);
+      if(meta){ delete imoveis[idx].fotos; delete imoveis[idx].foto; }
+    }else{
+      dados.id = id;
+      imoveis.unshift(dados);
+    }
+    return setData('gm_imoveis', imoveis);
+  }).then(function(){
     renderAdminImoveis();
     mostrarMsg('msg-imovel', _editandoId ? 'Imóvel atualizado com sucesso!' : 'Imóvel salvo com sucesso!', true);
     limparMsgDepois('msg-imovel');
